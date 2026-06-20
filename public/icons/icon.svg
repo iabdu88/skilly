@@ -1,19 +1,21 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skilly">
-  <!-- Dark background with rounded corners for SVG icon use -->
+  <!-- Dark background with rounded corners for SVG icon rendering -->
   <rect width="512" height="512" rx="96" fill="#0F0A1E"/>
-  <!-- Left bracket [ matching SkillySvgLogo.tsx style -->
-  <path d="M150 60 L60 60 L60 452 L150 452" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Left bracket [ -->
+  <path d="M90 64 L44 64 L44 448 L90 448"
+    stroke="#F59E0B" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Right bracket ] -->
-  <path d="M362 60 L452 60 L452 452 L362 452" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- "S" lettermark centered between brackets -->
+  <path d="M422 64 L468 64 L468 448 L422 448"
+    stroke="#F59E0B" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- "skilly" wordmark centered between brackets -->
   <text
     x="256"
     y="256"
     font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
-    font-weight="800"
-    font-size="220"
+    font-weight="700"
+    font-size="108"
     fill="#F8F7FF"
     text-anchor="middle"
     dominant-baseline="central"
-  >S</text>
+  >skilly</text>
 </svg>
