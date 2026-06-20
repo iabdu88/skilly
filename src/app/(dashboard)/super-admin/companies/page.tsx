@@ -11,7 +11,7 @@ export default async function CompaniesPage() {
 
   const { data: companies } = await admin
     .from("companies")
-    .select("id, name, logo_url, is_archived, created_at")
+    .select("id, name, name_ar, logo_url, is_archived, created_at")
     .order("created_at", { ascending: false });
 
   const augmented = await Promise.all((companies ?? []).map(async (c) => {

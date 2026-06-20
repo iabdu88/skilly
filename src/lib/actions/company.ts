@@ -18,12 +18,13 @@ export async function updateCompanyAction(formData: FormData) {
   const actor = await assertSuperAdmin();
   if (!actor) return { error: "Unauthorized." };
 
-  const id   = formData.get("id") as string;
-  const name = (formData.get("name") as string)?.trim();
+  const id      = formData.get("id") as string;
+  const name    = (formData.get("name") as string)?.trim();
   if (!id || !name) return { error: "Company name is required." };
+  const name_ar = (formData.get("name_ar") as string)?.trim() || null;
 
   const admin = createAdminClient();
-  const updateData: Record<string, unknown> = { name };
+  const updateData: Record<string, unknown> = { name, name_ar };
 
   const logoFile = formData.get("logo") as File | null;
   if (logoFile && logoFile.size > 0) {

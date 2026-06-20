@@ -82,11 +82,13 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName, c
   const nav = (
     <nav className="flex flex-col h-full">
       <div className="flex items-center gap-3 px-4 py-5 border-b border-border min-w-0">
-        {companyLogo && companyName ? (
+        {companyName ? (
           <>
-            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden border border-border">
-              <Image src={companyLogo} alt={companyName} width={32} height={32} className="w-full h-full object-contain p-0.5" />
-            </div>
+            {companyLogo && (
+              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden border border-border">
+                <Image src={companyLogo} alt={companyName} width={32} height={32} className="w-full h-full object-contain p-0.5" />
+              </div>
+            )}
             <span className="font-bold text-foreground text-lg truncate">{displayName}</span>
           </>
         ) : (

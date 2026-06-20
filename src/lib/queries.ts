@@ -13,6 +13,6 @@ export const getCachedCompany = unstable_cache(
       .single();
     return data as { name: string; name_ar: string | null; logo_url: string | null } | null;
   },
-  ["company"],
+  ["company-v2"],
   { revalidate: 300 }
 );

@@ -39,9 +39,9 @@ export async function Header({ title, userId }: HeaderProps) {
           <Image
             src={company.logo_url}
             alt={company.name ?? ""}
-            width={24}
-            height={24}
-            className="w-6 h-6 rounded-md object-contain shrink-0"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-lg object-contain shrink-0 border border-border bg-white/5"
           />
         )}
         <span className="text-sm font-semibold text-foreground truncate">{title}</span>

@@ -9,6 +9,7 @@ import { compressToWebP } from "@/lib/image";
 interface Company {
   id: string;
   name: string;
+  name_ar: string | null;
   logo_url: string | null;
   is_archived: boolean;
   created_at: string;
@@ -185,6 +186,19 @@ export function CompanyManagement({ companies }: Props) {
                       required
                       defaultValue={modal.company.name}
                       className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">
+                      Company Name (Arabic) <span className="text-muted-foreground font-normal text-xs">optional</span>
+                    </label>
+                    <input
+                      name="name_ar"
+                      type="text"
+                      dir="rtl"
+                      defaultValue={modal.company.name_ar ?? ""}
+                      placeholder="مثال: شركة التجزئة"
+                      className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
                   <div className="space-y-1.5">
