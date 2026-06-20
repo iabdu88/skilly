@@ -29,11 +29,12 @@ export async function generateInviteCode(formData: FormData) {
   if (profile.role === "super_admin") {
     const company_name = (formData.get("company_name") as string)?.trim();
     if (!company_name) return { error: "Company name is required." };
+    const company_name_ar = (formData.get("company_name_ar") as string)?.trim() || null;
 
     // Create company immediately — trainer is linked when they sign up
     const { data: company, error: companyError } = await admin
       .from("companies")
-      .insert({ name: company_name })
+      .insert({ name: company_name, name_ar: company_name_ar })
       .select("id")
       .single();
     if (companyError || !company) return { error: companyError?.message ?? "Failed to create company." };

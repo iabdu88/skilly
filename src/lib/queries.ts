@@ -8,10 +8,10 @@ export const getCachedCompany = unstable_cache(
     const admin = createAdminClient();
     const { data } = await admin
       .from("companies")
-      .select("name, logo_url")
+      .select("name, name_ar, logo_url")
       .eq("id", companyId)
       .single();
-    return data as { name: string; logo_url: string | null } | null;
+    return data as { name: string; name_ar: string | null; logo_url: string | null } | null;
   },
   ["company"],
   { revalidate: 300 }

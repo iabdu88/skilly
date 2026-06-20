@@ -85,6 +85,18 @@ export function GenerateInviteForm({ userRole }: Props) {
             </div>
 
             <div className="space-y-1.5">
+              <label className="text-sm font-medium text-foreground" htmlFor="invite-company-name-ar">
+                {t("companyNameAr")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
+              </label>
+              <input
+                id="invite-company-name-ar" name="company_name_ar" type="text"
+                placeholder={t("companyNameArPlaceholder")}
+                dir="rtl"
+                className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground">
                 {t("companyLogo")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
               </label>

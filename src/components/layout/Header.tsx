@@ -1,7 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/auth";
+import { getCachedCompany } from "@/lib/queries";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import Image from "next/image";
 
 interface HeaderProps {
   title: string;
@@ -11,7 +14,7 @@ interface HeaderProps {
 export async function Header({ title, userId }: HeaderProps) {
   const supabase = await createClient();
 
-  const [{ count }, { data: recentNotifs }] = await Promise.all([
+  const [{ count }, { data: recentNotifs }, user] = await Promise.all([
     supabase
       .from("notifications")
       .select("*", { count: "exact", head: true })
@@ -23,12 +26,28 @@ export async function Header({ title, userId }: HeaderProps) {
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20),
+    getUser(),
   ]);
+
+  const company = user?.company_id ? await getCachedCompany(user.company_id) : null;
 
   return (
     <header className="h-14 border-b border-border bg-card/50 backdrop-blur flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
-      {/* ms-10 uses inline-start margin so it clears the hamburger in both LTR and RTL */}
-      <h1 className="text-base font-semibold text-foreground lg:text-lg ms-10 lg:ms-0">{title}</h1>
+      {/* Mobile: company logo icon + page title (logo only shown if company has one) */}
+      <div className="flex items-center gap-2 ms-10 lg:hidden min-w-0">
+        {company?.logo_url && (
+          <Image
+            src={company.logo_url}
+            alt={company.name ?? ""}
+            width={24}
+            height={24}
+            className="w-6 h-6 rounded-md object-contain shrink-0"
+          />
+        )}
+        <span className="text-sm font-semibold text-foreground truncate">{title}</span>
+      </div>
+      {/* Desktop: page title only — sidebar handles company branding */}
+      <h1 className="hidden lg:block text-base lg:text-lg font-semibold text-foreground">{title}</h1>
       <div className="flex items-center gap-1">
         <LanguageSwitcher />
         <ThemeToggle />

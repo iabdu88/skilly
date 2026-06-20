@@ -122,6 +122,8 @@
     "descTrainer": "يُنشئ رمزاً للاستخدام مرة واحدة لمدير أو موظف في شركتك.",
     "companyName": "اسم الشركة",
     "companyNamePlaceholder": "مثال: شركة أكمي للتجزئة",
+    "companyNameAr": "اسم الشركة (بالعربية)",
+    "companyNameArPlaceholder": "مثال: فاد العالمية",
     "companyLogo": "شعار الشركة",
     "optional": "اختياري",
     "uploadLogo": "رفع الشعار",

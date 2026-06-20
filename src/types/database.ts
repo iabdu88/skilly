@@ -3,6 +3,7 @@ export type UserRole = "super_admin" | "trainer" | "manager" | "employee";
 export interface Company {
   id: string;
   name: string;
+  name_ar: string | null;
   logo_url: string | null;
   created_at: string;
 }

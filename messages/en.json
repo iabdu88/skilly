@@ -122,6 +122,8 @@
     "descTrainer": "Creates a single-use code for a Manager or Employee in your company.",
     "companyName": "Company Name",
     "companyNamePlaceholder": "e.g. Acme Retail Co.",
+    "companyNameAr": "Company Name (Arabic)",
+    "companyNameArPlaceholder": "e.g. فاد العالمية",
     "companyLogo": "Company Logo",
     "optional": "optional",
     "uploadLogo": "Upload logo",

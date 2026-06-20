@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SkillySvgLogo } from "@/components/brand/SkillySvgLogo";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   BookOpen, ShoppingBag, BarChart2, Star, MessageCircle,
   Award, Trophy, Users, Building2, LogOut, Menu, X, UserCircle,
@@ -68,12 +68,15 @@ interface SidebarProps {
   avatarUrl?: string | null;
   companyLogo?: string | null;
   companyName?: string | null;
+  companyNameAr?: string | null;
 }
 
-export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }: SidebarProps) {
+export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName, companyNameAr }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const t = useTranslations("nav");
+  const locale = useLocale();
+  const displayName = locale === "ar" && companyNameAr ? companyNameAr : companyName;
   const items = NAV.filter((n) => n.roles.includes(role));
 
   const nav = (
@@ -84,7 +87,7 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
             <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden border border-border">
               <Image src={companyLogo} alt={companyName} width={32} height={32} className="w-full h-full object-contain p-0.5" />
             </div>
-            <span className="font-bold text-foreground text-lg truncate">{companyName}</span>
+            <span className="font-bold text-foreground text-lg truncate">{displayName}</span>
           </>
         ) : (
           <SkillySvgLogo width={130} />

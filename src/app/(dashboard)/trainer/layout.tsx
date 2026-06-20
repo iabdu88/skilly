@@ -14,6 +14,7 @@ export default async function TrainerLayout({ children }: { children: React.Reac
         avatarUrl={user.avatar_url}
         companyLogo={company?.logo_url ?? null}
         companyName={company?.name ?? null}
+        companyNameAr={company?.name_ar ?? null}
       />
       <div className="flex-1 flex flex-col min-w-0">
         {children}
