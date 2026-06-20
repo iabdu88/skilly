@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { forgotPasswordAction } from "@/lib/actions/auth";
+import { SkillySvgLogo } from "@/components/brand/SkillySvgLogo";
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth");
@@ -27,8 +28,8 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
-            <span className="text-2xl font-bold text-white">S</span>
+          <div className="flex justify-center mb-5">
+            <SkillySvgLogo width={150} />
           </div>
           <h1 className="text-2xl font-bold text-foreground">{t("resetPassword")}</h1>
           <p className="text-muted-foreground text-sm mt-1">

@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/Header";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle, Circle, Lock } from "lucide-react";
 import { notFound } from "next/navigation";
-import type { Lesson, LessonProgress } from "@/types/database";
+import type { LessonProgress } from "@/types/database";
 
 interface PageProps {
   params: Promise<{ courseId: string }>;
@@ -16,26 +16,28 @@ export default async function EmployeeCourseDetailPage({ params }: PageProps) {
   const [user, t] = await Promise.all([getUser(), getTranslations("training")]);
   const supabase = await createClient();
 
-  const { data: course } = await supabase
-    .from("courses")
-    .select("*")
-    .eq("id", courseId)
-    .eq("is_published", true)
-    .single();
+  // Fetch course and lessons in parallel; progress waits for lesson IDs
+  const [{ data: course }, { data: lessons }] = await Promise.all([
+    supabase
+      .from("courses")
+      .select("id, title, description")
+      .eq("id", courseId)
+      .eq("is_published", true)
+      .single(),
+    supabase
+      .from("lessons")
+      .select("id, title, order_index")
+      .eq("course_id", courseId)
+      .order("order_index"),
+  ]);
 
   if (!course) notFound();
 
-  const { data: lessons } = await supabase
-    .from("lessons")
-    .select("*")
-    .eq("course_id", courseId)
-    .order("order_index");
-
   const { data: progress } = await supabase
     .from("lesson_progress")
-    .select("*")
+    .select("lesson_id, status")
     .eq("user_id", user!.id)
-    .in("lesson_id", lessons?.map((l: Lesson) => l.id) ?? []);
+    .in("lesson_id", lessons?.map((l) => l.id) ?? []);
 
   function getStatus(lessonId: string) {
     return (progress as LessonProgress[])?.find((p) => p.lesson_id === lessonId)?.status;
@@ -56,7 +58,7 @@ export default async function EmployeeCourseDetailPage({ params }: PageProps) {
         </div>
 
         <div className="space-y-2">
-          {lessons?.map((lesson: Lesson, idx: number) => {
+          {lessons?.map((lesson, idx) => {
             const status = getStatus(lesson.id);
             const prevCompleted = idx === 0 || getStatus(lessons[idx - 1].id) === "completed";
             const locked = !prevCompleted;

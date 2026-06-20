@@ -1,0 +1,17 @@
+<svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skilly">
+  <!-- Left bracket accent -->
+  <path d="M18 6L6 6L6 34L18 34" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Wordmark -->
+  <text
+    x="80"
+    y="20"
+    font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
+    font-weight="700"
+    font-size="18"
+    fill="#F8F7FF"
+    text-anchor="middle"
+    dominant-baseline="central"
+  >skilly</text>
+  <!-- Right bracket accent -->
+  <path d="M142 6L154 6L154 34L142 34" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

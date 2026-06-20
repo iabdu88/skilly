@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { SkillySvgLogo } from "@/components/brand/SkillySvgLogo";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -76,19 +78,17 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
 
   const nav = (
     <nav className="flex flex-col h-full">
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-border">
-        {companyLogo ? (
-          <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden border border-border">
-            <img src={companyLogo} alt={companyName ?? "Company"} className="w-full h-full object-contain p-0.5" />
-          </div>
+      <div className="flex items-center gap-3 px-4 py-5 border-b border-border min-w-0">
+        {companyLogo && companyName ? (
+          <>
+            <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 overflow-hidden border border-border">
+              <Image src={companyLogo} alt={companyName} width={32} height={32} className="w-full h-full object-contain p-0.5" />
+            </div>
+            <span className="font-bold text-foreground text-lg truncate">{companyName}</span>
+          </>
         ) : (
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shrink-0">
-            <span className="text-sm font-bold text-white">S</span>
-          </div>
+          <SkillySvgLogo width={130} />
         )}
-        <span className="font-bold text-foreground text-lg truncate">
-          {companyLogo && companyName ? companyName : "Skilly"}
-        </span>
       </div>
 
       <ul className="flex-1 overflow-y-auto py-4 space-y-0.5 px-2">
@@ -117,7 +117,7 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
       <div className="border-t border-border p-4">
         <div className="flex items-center gap-3 mb-3">
           {avatarUrl ? (
-            <img src={avatarUrl} alt={userName} className="w-8 h-8 rounded-full object-cover" />
+            <Image src={avatarUrl} alt={userName} width={32} height={32} className="w-8 h-8 rounded-full object-cover" />
           ) : (
             <div className="w-8 h-8 rounded-full bg-primary/30 flex items-center justify-center">
               <span className="text-xs font-bold text-primary">{userName.charAt(0).toUpperCase()}</span>

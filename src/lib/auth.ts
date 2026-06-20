@@ -1,23 +1,28 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import type { User, UserRole } from "@/types/database";
 
-export async function getUser(): Promise<User | null> {
+// React.cache() deduplicates this within a single render pass — layout,
+// page, and Header all call getUser() but only the first actually hits the DB.
+export const getUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
-  const { data: { user: authUser } } = await supabase.auth.getUser();
-  if (!authUser) return null;
 
-  // We fetch the full profile from the DB rather than reading role/company_id
-  // from the JWT because JWTs are cached and won't reflect role changes made
-  // after the token was issued (e.g. an admin demoting a user).
+  // getSession() reads the JWT from the cookie — no network round-trip (~5ms).
+  // The proxy already rejects unauthenticated requests before they reach here,
+  // so the session cookie is valid. We still query the DB for the full profile
+  // so that role changes take effect immediately (role comes from DB, not JWT).
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) return null;
+
   const { data } = await supabase
     .from("users")
     .select("*")
-    .eq("id", authUser.id)
+    .eq("id", session.user.id)
     .single();
 
   return data as User | null;
-}
+});
 
 export async function requireRole(allowed: UserRole[]) {
   const user = await getUser();

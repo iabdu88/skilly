@@ -11,10 +11,9 @@ export async function loginAction(formData: FormData) {
   const password = formData.get("password") as string;
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: error.message };
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) return { error: error.message };
   if (!user) return { error: "Authentication failed." };
 
   const { data: profile } = await supabase

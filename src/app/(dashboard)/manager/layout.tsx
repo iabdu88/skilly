@@ -1,14 +1,10 @@
 import { requireRole } from "@/lib/auth";
-import { createClient } from "@/lib/supabase/server";
+import { getCachedCompany } from "@/lib/queries";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export default async function ManagerLayout({ children }: { children: React.ReactNode }) {
-  const user     = await requireRole(["manager"]);
-  const supabase = await createClient();
-
-  const { data: company } = user.company_id
-    ? await supabase.from("companies").select("name, logo_url").eq("id", user.company_id).single()
-    : { data: null };
+  const user    = await requireRole(["manager"]);
+  const company = user.company_id ? await getCachedCompany(user.company_id) : null;
 
   return (
     <div className="flex min-h-screen bg-background">

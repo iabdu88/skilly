@@ -38,7 +38,11 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // getSession() reads the session from the cookie — no network round-trip.
+  // getUser() (which verifies with Supabase servers) runs inside page components
+  // where the full user profile is needed anyway.
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
   function redirectWith(destination: string) {

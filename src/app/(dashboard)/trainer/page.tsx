@@ -20,7 +20,7 @@ export default async function TrainerDashboard() {
     supabase.from("courses").select("*", { count: "exact", head: true }).eq("company_id", user!.company_id!),
     supabase.from("users").select("*", { count: "exact", head: true }).eq("company_id", user!.company_id!).eq("role", "employee"),
     supabase.from("stars").select("*", { count: "exact", head: true }).eq("company_id", user!.company_id!),
-    supabase.from("invite_codes").select("*").eq("created_by", user!.id).order("created_at", { ascending: false }).limit(10),
+    supabase.from("invite_codes").select("id, code, role, company_name, expires_at, used_at").eq("created_by", user!.id).order("created_at", { ascending: false }).limit(10),
   ]);
 
   const stats = [

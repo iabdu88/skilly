@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Loader2, MailCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { redeemInviteCode } from "@/lib/actions/invite";
+import { SkillySvgLogo } from "@/components/brand/SkillySvgLogo";
 
 export default function SignupPage() {
   const t = useTranslations("auth");
@@ -51,8 +52,8 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
-            <span className="text-2xl font-bold text-white">S</span>
+          <div className="flex justify-center mb-5">
+            <SkillySvgLogo width={150} />
           </div>
           <h1 className="text-2xl font-bold text-foreground">{t("createYourAccount")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("inviteRequired")}</p>

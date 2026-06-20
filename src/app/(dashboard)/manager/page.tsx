@@ -8,17 +8,18 @@ export default async function ManagerDashboard() {
   const [user, t] = await Promise.all([getUser(), getTranslations("dashboard")]);
   const supabase = await createClient();
 
-  const { count: employees } = await supabase
-    .from("users")
-    .select("*", { count: "exact", head: true })
-    .eq("company_id", user!.company_id!)
-    .eq("role", "employee");
-
-  const { data: todaySales } = await supabase
-    .from("sales_entries")
-    .select("amount")
-    .eq("company_id", user!.company_id!)
-    .eq("date", new Date().toISOString().split("T")[0]);
+  const [{ count: employees }, { data: todaySales }] = await Promise.all([
+    supabase
+      .from("users")
+      .select("*", { count: "exact", head: true })
+      .eq("company_id", user!.company_id!)
+      .eq("role", "employee"),
+    supabase
+      .from("sales_entries")
+      .select("amount")
+      .eq("company_id", user!.company_id!)
+      .eq("date", new Date().toISOString().split("T")[0]),
+  ]);
 
   const totalSales = todaySales?.reduce((s, e) => s + e.amount, 0) ?? 0;
 

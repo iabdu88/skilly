@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Plus, BookOpen, CheckCircle, Eye } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PublishToggle } from "@/components/training/PublishToggle";
-import type { Lesson, LessonProgress, User } from "@/types/database";
+import type { LessonProgress, User } from "@/types/database";
 
 interface PageProps {
   params: Promise<{ courseId: string }>;
@@ -17,30 +17,34 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const [user, t] = await Promise.all([getUser(), getTranslations("training")]);
   const supabase = await createClient();
 
-  const { data: course } = await supabase
-    .from("courses")
-    .select("*")
-    .eq("id", courseId)
-    .eq("company_id", user!.company_id!)
-    .single();
+  // Run course, lessons, and employees in parallel; progress waits for lesson IDs
+  const [{ data: course }, { data: lessons }, { data: employees }] = await Promise.all([
+    supabase
+      .from("courses")
+      .select("id, title, description, is_published")
+      .eq("id", courseId)
+      .eq("company_id", user!.company_id!)
+      .single(),
+    supabase
+      .from("lessons")
+      .select("id, title, order_index")
+      .eq("course_id", courseId)
+      .order("order_index"),
+    supabase
+      .from("users")
+      .select("id, full_name, avatar_url")
+      .eq("company_id", user!.company_id!)
+      .eq("role", "employee"),
+  ]);
 
   if (!course) notFound();
 
-  const { data: lessons } = await supabase
-    .from("lessons")
-    .select("*")
-    .eq("course_id", courseId)
-    .order("order_index");
-
-  const { data: employees } = await supabase
-    .from("users")
-    .select("id, full_name, avatar_url")
-    .eq("company_id", user!.company_id!)
-    .eq("role", "employee");
-
-  const lessonIds = lessons?.map((l: Lesson) => l.id) ?? [];
+  const lessonIds = lessons?.map((l) => l.id) ?? [];
   const { data: progress } = lessonIds.length
-    ? await supabase.from("lesson_progress").select("*").in("lesson_id", lessonIds)
+    ? await supabase
+        .from("lesson_progress")
+        .select("lesson_id, user_id, status")
+        .in("lesson_id", lessonIds)
     : { data: [] };
 
   function getStatus(lessonId: string, userId: string) {
@@ -76,7 +80,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
           </div>
 
           <div className="space-y-2">
-            {lessons?.map((lesson: Lesson, idx: number) => (
+            {lessons?.map((lesson, idx) => (
               <Link
                 key={lesson.id}
                 href={`/trainer/courses/${courseId}/lessons/${lesson.id}`}
@@ -103,7 +107,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-start px-4 py-3 text-muted-foreground font-medium">{t("employeeProgress")}</th>
-                    {lessons.map((l: Lesson) => (
+                    {lessons.map((l) => (
                       <th key={l.id} className="px-3 py-3 text-center text-muted-foreground font-medium text-xs truncate max-w-24">
                         {l.title}
                       </th>
@@ -114,7 +118,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   {(employees as User[]).map((emp) => (
                     <tr key={emp.id} className="border-b border-border/50 last:border-0">
                       <td className="px-4 py-3 font-medium text-foreground">{emp.full_name}</td>
-                      {lessons.map((l: Lesson) => {
+                      {lessons.map((l) => {
                         const st = getStatus(l.id, emp.id);
                         return (
                           <td key={l.id} className="px-3 py-3 text-center">

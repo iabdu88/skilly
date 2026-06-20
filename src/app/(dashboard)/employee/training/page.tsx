@@ -4,23 +4,24 @@ import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import Link from "next/link";
 import { BookOpen, CheckCircle, Clock } from "lucide-react";
-import type { Course, LessonProgress } from "@/types/database";
+import type { LessonProgress } from "@/types/database";
 
 export default async function EmployeeTrainingPage() {
   const [user, t] = await Promise.all([getUser(), getTranslations("training")]);
   const supabase = await createClient();
 
-  const { data: courses } = await supabase
-    .from("courses")
-    .select("*, lessons(id)")
-    .eq("company_id", user!.company_id!)
-    .eq("is_published", true)
-    .in("assigned_role", ["employee"]);
-
-  const courseIds = courses?.map((c: Course) => c.id) ?? [];
-  const { data: progress } = courseIds.length
-    ? await supabase.from("lesson_progress").select("*").eq("user_id", user!.id)
-    : { data: [] };
+  const [{ data: courses }, { data: progress }] = await Promise.all([
+    supabase
+      .from("courses")
+      .select("id, title, description, thumbnail_url, assigned_role, is_published, lessons(id)")
+      .eq("company_id", user!.company_id!)
+      .eq("is_published", true)
+      .in("assigned_role", ["employee"]),
+    supabase
+      .from("lesson_progress")
+      .select("lesson_id, status")
+      .eq("user_id", user!.id),
+  ]);
 
   function courseProgress(lessons: { id: string }[]) {
     const total = lessons.length;
@@ -41,7 +42,7 @@ export default async function EmployeeTrainingPage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {courses?.map((course: Course & { lessons: { id: string }[] }) => {
+          {courses?.map((course) => {
             const { done, total, pct } = courseProgress(course.lessons ?? []);
             const completed = pct === 100;
             return (

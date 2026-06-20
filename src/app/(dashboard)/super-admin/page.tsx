@@ -21,7 +21,7 @@ export default async function SuperAdminDashboard() {
   ] = await Promise.all([
     supabase.from("companies").select("*", { count: "exact", head: true }),
     supabase.from("users").select("*", { count: "exact", head: true }),
-    supabase.from("invite_codes").select("*").eq("created_by", user!.id).order("created_at", { ascending: false }).limit(10),
+    supabase.from("invite_codes").select("id, code, role, company_name, expires_at, used_at").eq("created_by", user!.id).order("created_at", { ascending: false }).limit(10),
     admin.from("companies").select("id, name").eq("is_archived", false).order("name"),
   ]);
 
