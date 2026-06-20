@@ -31,7 +31,7 @@ export function SkillySvgLogo({ width = 130, className }: Props) {
         fontFamily="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
         fontWeight="700"
         fontSize="18"
-        fill="#F8F7FF"
+        fill="currentColor"
         textAnchor="middle"
         dominantBaseline="central"
       >
