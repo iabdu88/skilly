@@ -1,5 +1,14 @@
 // Generates PWA icon PNGs from the Skilly bracket wordmark design using Playwright.
 // Run: node scripts/generate-icons.mjs
+// Run: node scripts/generate-icons.mjs --preview   (renders 256px preview for inspection)
+//
+// Design rationale:
+//   SkillySvgLogo.tsx uses viewBox="0 0 160 40" with bracket arms at x=6/154 (outer)
+//   and x=18/142 (arm tips), text at font-size=26, stroke-width=2.5.
+//   We scale that 160×40 logo at ×3 (= 480×120px, centred in 512×512) so the
+//   bracket-to-text ratio is pixel-identical to the sidebar logo.
+//   x-offset = (512-480)/2 = 16,  y-offset = (512-120)/2 = 196
+//   stroke-width is increased from 7.5 (proportional) to 12 for icon visibility.
 import { chromium } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -8,31 +17,22 @@ import fs from 'fs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const iconsDir = path.join(__dirname, '../public/icons');
 
-// Preview mode: renders a larger version for manual inspection
-const PREVIEW = process.argv.includes('--preview');
-
-// Bracket + wordmark SVG body (no background rect — body supplies it for PNGs)
-// Outer bracket edges: x=44 / x=468  (8.6% from each side)
-// Arm depth: 46px → arm tips at x=90 / x=422
-// Inner clear width between tips: 332px
-// Full-height brackets: y=64 → y=448 (392px tall, 12.5% top/bottom margin)
-// "skilly" in Plus Jakarta Sans 700 at 108px ≈ ~280px wide → fits with ~26px margin
-// stroke-width=24 → round caps add ±12px, effective inner = ~308px
+// SVG body — no background rect; the HTML page supplies the dark fill for PNGs.
+// Coordinates are in the 512×512 viewBox; the SVG width/height attrs do the scaling.
 function svgBody(size) {
-  // All coordinates are in the 512×512 viewBox and scale via width/height attrs
   return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Left bracket [ -->
-    <path d="M90 64 L44 64 L44 448 L90 448"
-      stroke="#F59E0B" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Left bracket [  (SkillySvgLogo ×3, x+16, y+196) -->
+    <path d="M70 214 L34 214 L34 298 L70 298"
+      stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
     <!-- Right bracket ] -->
-    <path d="M422 64 L468 64 L468 448 L422 448"
-      stroke="#F59E0B" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- "skilly" wordmark centered between brackets -->
+    <path d="M442 214 L478 214 L478 298 L442 298"
+      stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- "skilly" wordmark: font-size=26×3=78, centred at (256,256) -->
     <text
       x="256" y="256"
       font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
       font-weight="700"
-      font-size="108"
+      font-size="78"
       fill="#F8F7FF"
       text-anchor="middle"
       dominant-baseline="central"
@@ -56,10 +56,11 @@ function makeHtml(size) {
 </html>`;
 }
 
+const PREVIEW = process.argv.includes('--preview');
+const sizes = PREVIEW ? [256] : [512, 192];
+
 const browser = await chromium.launch();
 const page = await browser.newPage();
-
-const sizes = PREVIEW ? [256] : [512, 192];
 
 for (const size of sizes) {
   await page.setViewportSize({ width: size, height: size });
@@ -67,17 +68,13 @@ for (const size of sizes) {
   try {
     await page.waitForLoadState('networkidle', { timeout: 5000 });
   } catch {
-    // Font CDN timeout — system fallback will render
+    // Font CDN timeout — system fallback will be used
   }
-
-  const filename = PREVIEW
-    ? `icon-preview-${size}x${size}.png`
-    : `icon-${size}x${size}.png`;
+  const filename = PREVIEW ? `icon-preview-${size}x${size}.png` : `icon-${size}x${size}.png`;
   const outputPath = path.join(iconsDir, filename);
-  const buffer = await page.screenshot({ type: 'png' });
-  fs.writeFileSync(outputPath, buffer);
+  fs.writeFileSync(outputPath, await page.screenshot({ type: 'png' }));
   const kb = (fs.statSync(outputPath).size / 1024).toFixed(1);
-  console.log(`✓ ${filename}  (${size}x${size}, ${kb} KB)`);
+  console.log(`✓ ${filename}  (${size}×${size}, ${kb} KB)`);
 }
 
 await browser.close();
