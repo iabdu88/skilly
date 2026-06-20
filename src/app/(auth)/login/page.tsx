@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { loginAction } from "@/lib/actions/auth";
 
-export default function LoginPage() {
-  const router         = useRouter();
-  const searchParams   = useSearchParams();
-  const [error, setError]     = useState<string | null>(
-    searchParams.get("error") === "confirmation_failed" ? "Confirmation link expired. Request a new one via Forgot Password." : null
+function LoginForm() {
+  const t = useTranslations("auth");
+  const router       = useRouter();
+  const searchParams = useSearchParams();
+  const [error, setError] = useState<string | null>(
+    searchParams.get("error") === "confirmation_failed" ? t("confirmationFailed") : null
   );
   const [isPending, startTransition] = useTransition();
 
@@ -32,29 +34,33 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
             <span className="text-2xl font-bold text-white">S</span>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Welcome to Skilly</h1>
-          <p className="text-muted-foreground text-sm mt-1">Sign in to your account</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("welcome")}</h1>
+          <p className="text-muted-foreground text-sm mt-1">{t("tagline")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-card rounded-2xl p-6 space-y-4 border border-border">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground" htmlFor="email">Email</label>
+            <label className="text-sm font-medium text-foreground" htmlFor="email">
+              {t("email")}
+            </label>
             <input
               id="email"
               name="email"
               type="email"
               required
               autoComplete="email"
-              placeholder="you@company.com"
+              placeholder={t("emailPlaceholder")}
               className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-foreground" htmlFor="password">Password</label>
+              <label className="text-sm font-medium text-foreground" htmlFor="password">
+                {t("password")}
+              </label>
               <Link href="/forgot-password" className="text-xs text-primary hover:underline">
-                Forgot password?
+                {t("forgotPassword")}
               </Link>
             </div>
             <input
@@ -63,7 +69,7 @@ export default function LoginPage() {
               type="password"
               required
               autoComplete="current-password"
-              placeholder="••••••••"
+              placeholder={t("passwordPlaceholder")}
               className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -78,17 +84,25 @@ export default function LoginPage() {
             className="w-full rounded-lg bg-primary text-white font-semibold py-2.5 text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isPending ? "Signing in…" : "Sign in"}
+            {isPending ? t("signingIn") : t("signIn")}
           </button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-5">
-          Have an invite code?{" "}
+          {t("haveInviteCode")}{" "}
           <Link href="/signup" className="text-primary hover:underline font-medium">
-            Create an account
+            {t("createAccount")}
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

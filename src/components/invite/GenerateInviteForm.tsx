@@ -3,6 +3,7 @@
 import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Copy, Check, Loader2, Building2, ImagePlus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { generateInviteCode } from "@/lib/actions/invite";
 import { compressToWebP } from "@/lib/image";
 
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function GenerateInviteForm({ userRole }: Props) {
+  const t      = useTranslations("invite");
   const router  = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
@@ -28,7 +30,7 @@ export function GenerateInviteForm({ userRole }: Props) {
       setLogoFile(compressed);
       setLogoPreview(URL.createObjectURL(compressed));
     } catch {
-      setError("Could not process image.");
+      setError(t("imageError"));
     }
   }
 
@@ -62,11 +64,9 @@ export function GenerateInviteForm({ userRole }: Props) {
   return (
     <div className="bg-card rounded-2xl p-5 border border-border space-y-4">
       <div>
-        <h3 className="font-semibold text-foreground">Generate Invite Code</h3>
+        <h3 className="font-semibold text-foreground">{t("title")}</h3>
         <p className="text-xs text-muted-foreground mt-0.5">
-          {userRole === "super_admin"
-            ? "Creates the company and generates a single-use invite code for their first Trainer."
-            : "Creates a single-use code for a Manager or Employee in your company."}
+          {userRole === "super_admin" ? t("descAdmin") : t("descTrainer")}
         </p>
       </div>
 
@@ -75,22 +75,18 @@ export function GenerateInviteForm({ userRole }: Props) {
           <>
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground" htmlFor="invite-company-name">
-                Company Name
+                {t("companyName")}
               </label>
               <input
-                id="invite-company-name"
-                name="company_name"
-                type="text"
-                required
-                placeholder="e.g. Acme Retail Co."
+                id="invite-company-name" name="company_name" type="text" required
+                placeholder={t("companyNamePlaceholder")}
                 className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
-            {/* Optional logo upload */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground">
-                Company Logo <span className="text-muted-foreground font-normal">(optional)</span>
+                {t("companyLogo")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
               </label>
               <div className="flex items-center gap-3">
                 {logoPreview ? (
@@ -102,59 +98,43 @@ export function GenerateInviteForm({ userRole }: Props) {
                     <Building2 className="w-5 h-5 text-muted-foreground" />
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => fileRef.current?.click()}
+                <button type="button" onClick={() => fileRef.current?.click()}
                   className="flex items-center gap-2 text-sm text-primary border border-primary/30 rounded-lg px-3 py-1.5 hover:bg-primary/5 transition-colors"
                 >
                   <ImagePlus className="w-3.5 h-3.5" />
-                  {logoFile ? "Change logo" : "Upload logo"}
+                  {logoFile ? t("changeLogo") : t("uploadLogo")}
                 </button>
                 {logoFile && (
-                  <button
-                    type="button"
+                  <button type="button"
                     onClick={() => { setLogoFile(null); setLogoPreview(null); }}
                     className="text-xs text-muted-foreground hover:text-destructive transition-colors"
                   >
-                    Remove
+                    {t("removeLogo")}
                   </button>
                 )}
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleLogoChange}
-                />
+                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
               </div>
             </div>
           </>
         ) : (
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-foreground" htmlFor="invite-role">Role</label>
-            <select
-              id="invite-role"
-              name="role"
-              defaultValue="employee"
+            <label className="text-sm font-medium text-foreground" htmlFor="invite-role">{t("role")}</label>
+            <select id="invite-role" name="role" defaultValue="employee"
               className="w-full rounded-lg bg-background border border-border px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="employee">Employee</option>
-              <option value="manager">Manager</option>
+              <option value="employee">{t("roleEmployee")}</option>
+              <option value="manager">{t("roleManager")}</option>
             </select>
           </div>
         )}
 
-        {error && (
-          <p className="text-sm text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-400 bg-red-400/10 rounded-lg px-3 py-2">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={isPending}
+        <button type="submit" disabled={isPending}
           className="w-full rounded-lg bg-primary text-white font-semibold py-2.5 text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-          {isPending ? "Generating…" : "Generate Code"}
+          {isPending ? t("generating") : t("generate")}
         </button>
       </form>
 
@@ -163,21 +143,20 @@ export function GenerateInviteForm({ userRole }: Props) {
           {result.company_name && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground bg-primary/5 rounded-lg px-3 py-2">
               <Building2 className="w-3.5 h-3.5 text-primary shrink-0" />
-              <span>
-                Company <span className="font-semibold text-foreground">{result.company_name}</span> created — share this code with their Trainer:
-              </span>
+              <span>{t("companyCreated", { name: result.company_name })}</span>
             </div>
           )}
           <div className="flex items-center gap-3 bg-primary/10 rounded-xl px-4 py-3 border border-primary/30">
             <span className="font-mono text-xl font-bold text-primary tracking-[0.2em] flex-1 select-all">
               {result.code}
             </span>
-            <button
-              onClick={handleCopy}
+            <button onClick={handleCopy}
               className="flex items-center gap-1.5 text-sm font-medium transition-colors shrink-0"
               style={{ color: copied ? "oklch(0.75 0.18 145)" : undefined }}
             >
-              {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4 text-muted-foreground" /> Copy</>}
+              {copied
+                ? <><Check className="w-4 h-4" /> {t("copied")}</>
+                : <><Copy className="w-4 h-4 text-muted-foreground" /> {t("copy")}</>}
             </button>
           </div>
         </div>

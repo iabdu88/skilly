@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NotificationBell } from "@/components/layout/NotificationBell";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 interface HeaderProps {
   title: string;
@@ -10,7 +11,6 @@ interface HeaderProps {
 export async function Header({ title, userId }: HeaderProps) {
   const supabase = await createClient();
 
-  // Fetch initial unread count + recent notifications for SSR
   const [{ count }, { data: recentNotifs }] = await Promise.all([
     supabase
       .from("notifications")
@@ -27,8 +27,10 @@ export async function Header({ title, userId }: HeaderProps) {
 
   return (
     <header className="h-14 border-b border-border bg-card/50 backdrop-blur flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
-      <h1 className="text-base font-semibold text-foreground lg:text-lg ml-10 lg:ml-0">{title}</h1>
+      {/* ms-10 uses inline-start margin so it clears the hamburger in both LTR and RTL */}
+      <h1 className="text-base font-semibold text-foreground lg:text-lg ms-10 lg:ms-0">{title}</h1>
       <div className="flex items-center gap-1">
+        <LanguageSwitcher />
         <ThemeToggle />
         <NotificationBell
           userId={userId}

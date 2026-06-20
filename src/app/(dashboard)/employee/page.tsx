@@ -1,11 +1,12 @@
 import { getUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { LevelBadge } from "@/components/gamification/LevelBadge";
 import { BookOpen, Award, Trophy, Flame } from "lucide-react";
 
 export default async function EmployeeDashboard() {
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("dashboard")]);
   const supabase = await createClient();
 
   const [
@@ -30,22 +31,22 @@ export default async function EmployeeDashboard() {
   const streak = fullUser?.current_streak ?? 0;
 
   const stats = [
-    { label: "Lessons Done",  value: completedLessons ?? 0, icon: BookOpen, color: "text-primary" },
-    { label: "Certificates",  value: certificates ?? 0,     icon: Award,    color: "text-accent" },
-    { label: "Total XP",      value: user!.points,           icon: Trophy,   color: "text-yellow-400" },
-    { label: "Day Streak",    value: streak,                 icon: Flame,    color: "text-orange-400" },
+    { labelKey: "lessonsDone", value: completedLessons ?? 0, icon: BookOpen, color: "text-primary" },
+    { labelKey: "certificates", value: certificates ?? 0,    icon: Award,    color: "text-accent" },
+    { labelKey: "totalXP",      value: user!.points,          icon: Trophy,   color: "text-yellow-400" },
+    { labelKey: "dayStreak",    value: streak,                icon: Flame,    color: "text-orange-400" },
   ];
 
   return (
     <>
-      <Header title="Dashboard" userId={user!.id} />
+      <Header title={t("welcome")} userId={user!.id} />
       <main className="p-4 lg:p-6 space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-foreground">
-              Welcome back, {user!.full_name.split(" ")[0]} 👋
+              {t("welcome")}, {user!.full_name.split(" ")[0]} 👋
             </h2>
-            <p className="text-muted-foreground text-sm mt-0.5">Keep up the great work!</p>
+            <p className="text-muted-foreground text-sm mt-0.5">{t("keepUpGreatWork")}</p>
           </div>
           <div className="shrink-0 bg-card border border-border rounded-xl px-3 py-2">
             <LevelBadge xp={user!.points} showBar size="sm" />
@@ -54,18 +55,17 @@ export default async function EmployeeDashboard() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((s) => (
-            <div key={s.label} className="bg-card rounded-2xl p-4 border border-border">
+            <div key={s.labelKey} className="bg-card rounded-2xl p-4 border border-border">
               <s.icon className={`w-6 h-6 ${s.color} mb-3`} />
               <p className="text-2xl font-bold text-foreground">{s.value.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t(s.labelKey as Parameters<typeof t>[0])}</p>
             </div>
           ))}
         </div>
 
-        {/* Recent badges */}
         {recentBadges && recentBadges.length > 0 && (
           <div className="bg-card rounded-2xl p-4 border border-border">
-            <p className="text-sm font-semibold text-foreground mb-3">Recent Badges</p>
+            <p className="text-sm font-semibold text-foreground mb-3">{t("recentBadges")}</p>
             <div className="flex gap-3">
               {(recentBadges as unknown as Array<{ awarded_at: string; badge: { slug: string; name: string; icon: string } | null }>).map((ub) =>
                 ub.badge && (

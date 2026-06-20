@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import type { User } from "@/types/database";
 
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function StarPickerForm({ type, period, companyId, chosenBy, employees }: Props) {
+  const t = useTranslations("stars");
   const router = useRouter();
   const [selected, setSelected] = useState<string>("");
   const [isPending, start] = useTransition();
@@ -51,7 +53,7 @@ export function StarPickerForm({ type, period, companyId, chosenBy, employees }:
   return (
     <form onSubmit={submit} className="bg-surface border border-border rounded-2xl p-4 space-y-3">
       <p className="text-sm font-semibold text-foreground">
-        Choose Star of the {type === "week" ? "Week" : "Month"}
+        {type === "week" ? t("chooseStarWeek") : t("chooseStarMonth")}
       </p>
       <select
         value={selected}
@@ -59,7 +61,7 @@ export function StarPickerForm({ type, period, companyId, chosenBy, employees }:
         required
         className="w-full rounded-xl bg-background border border-border px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
       >
-        <option value="">Select employee…</option>
+        <option value="">{t("selectEmployee")}</option>
         {employees.map((e) => (
           <option key={e.id} value={e.id}>{e.full_name}</option>
         ))}
@@ -70,7 +72,7 @@ export function StarPickerForm({ type, period, companyId, chosenBy, employees }:
         className="w-full bg-primary text-white font-semibold rounded-xl py-2 text-sm hover:bg-primary/90 disabled:opacity-40 flex items-center justify-center gap-2"
       >
         <Star className="w-3.5 h-3.5" />
-        {isPending ? "Saving…" : "Award Star"}
+        {isPending ? t("saving") : t("awardStar")}
       </button>
     </form>
   );

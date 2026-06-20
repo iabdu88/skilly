@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { OutfitWinnerPicker } from "@/components/outfit/OutfitWinnerPicker";
 import { Crown, ShoppingBag } from "lucide-react";
@@ -13,7 +14,7 @@ function getWeekNumber(date: Date) {
 }
 
 export default async function TrainerOutfitPage() {
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("outfit")]);
   const supabase = await createClient();
 
   const now = new Date();
@@ -32,21 +33,21 @@ export default async function TrainerOutfitPage() {
 
   return (
     <>
-      <Header title="Best Outfit" userId={user!.id} />
+      <Header title={t("outfitOfWeek")} userId={user!.id} />
       <main className="p-4 lg:p-6 space-y-6">
         <div>
-          <h2 className="text-xl font-bold text-foreground">Best Outfit — Week {week}</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">{submissions?.length ?? 0} submissions this week</p>
+          <h2 className="text-xl font-bold text-foreground">{t("trainerTitle", { n: week })}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("submissionsCount", { n: submissions?.length ?? 0 })}</p>
         </div>
 
         {winner && (
           <div className="bg-accent/10 border border-accent/30 rounded-2xl p-4 flex items-center gap-4">
             <Crown className="w-6 h-6 text-accent shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-accent">This week&apos;s winner</p>
+              <p className="text-sm font-semibold text-accent">{t("thisWeeksWinner")}</p>
               <p className="text-foreground font-bold">{winner.user?.full_name}</p>
             </div>
-            <img src={winner.image_url} alt="Winner" className="w-16 h-20 object-cover rounded-xl ml-auto" />
+            <img src={winner.image_url} alt="Winner" className="w-16 h-20 object-cover rounded-xl ms-auto" />
           </div>
         )}
 
@@ -55,11 +56,11 @@ export default async function TrainerOutfitPage() {
             <div key={sub.id} className="relative rounded-xl overflow-hidden group">
               <img src={sub.image_url} alt={sub.user?.full_name} className="w-full h-56 object-cover" />
               {sub.is_winner && (
-                <div className="absolute top-2 right-2 bg-accent rounded-full p-1.5">
+                <div className="absolute top-2 end-2 bg-accent rounded-full p-1.5">
                   <Crown className="w-3 h-3 text-black" />
                 </div>
               )}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+              <div className="absolute bottom-0 start-0 end-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                 <p className="text-sm text-white font-semibold truncate">{sub.user?.full_name}</p>
                 {!winner && (
                   <OutfitWinnerPicker
@@ -77,7 +78,7 @@ export default async function TrainerOutfitPage() {
           {!submissions?.length && (
             <div className="col-span-full text-center py-16 text-muted-foreground">
               <ShoppingBag className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p>No submissions yet</p>
+              <p>{t("noSubmissionsYet")}</p>
             </div>
           )}
         </div>

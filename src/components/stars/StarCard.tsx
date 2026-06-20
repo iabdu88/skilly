@@ -1,4 +1,5 @@
 import { Star, Trophy } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import type { User } from "@/types/database";
 
 interface Props {
@@ -7,9 +8,10 @@ interface Props {
   period: string;
 }
 
-export function StarCard({ type, user, period }: Props) {
+export async function StarCard({ type, user, period }: Props) {
+  const t = await getTranslations("stars");
   const Icon = type === "week" ? Star : Trophy;
-  const label = type === "week" ? "Star of the Week" : "Star of the Month";
+  const label = type === "week" ? t("starOfWeek") : t("starOfMonth");
   const color = type === "week" ? "text-yellow-400" : "text-accent";
   const bg = type === "week" ? "bg-yellow-400/10 border-yellow-400/30" : "bg-accent/10 border-accent/30";
 
@@ -30,7 +32,7 @@ export function StarCard({ type, user, period }: Props) {
           <p className="text-xs text-muted-foreground mt-1">{period}</p>
         </>
       ) : (
-        <p className="text-sm text-muted-foreground">Not chosen yet</p>
+        <p className="text-sm text-muted-foreground">{t("notChosenYet")}</p>
       )}
     </div>
   );

@@ -4,10 +4,12 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { compressToWebP } from "@/lib/image";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, Upload } from "lucide-react";
 import Link from "next/link";
 
 export default function NewCoursePage() {
+  const t = useTranslations("training");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -64,20 +66,19 @@ export default function NewCoursePage() {
         <Link href="/trainer/courses" className="p-2 hover:bg-surface rounded-xl transition-colors">
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-xl font-bold text-foreground">New Course</h1>
+        <h1 className="text-xl font-bold text-foreground">{t("newCourse")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Thumbnail */}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1.5">Thumbnail</label>
+          <label className="block text-sm font-medium text-foreground mb-1.5">{t("thumbnail")}</label>
           <label className="relative cursor-pointer">
             {thumb ? (
               <img src={thumb} alt="Thumbnail" className="w-full h-40 object-cover rounded-xl" />
             ) : (
               <div className="w-full h-40 bg-surface border border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2">
                 <Upload className="w-6 h-6 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Upload thumbnail</span>
+                <span className="text-sm text-muted-foreground">{t("uploadThumbnail")}</span>
               </div>
             )}
             <input type="file" accept="image/*" className="sr-only" onChange={handleThumb} />
@@ -85,43 +86,38 @@ export default function NewCoursePage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-foreground" htmlFor="title">Title *</label>
-          <input
-            id="title" name="title" required
+          <label className="text-sm font-medium text-foreground" htmlFor="title">{t("titleLabel")}</label>
+          <input id="title" name="title" required
             className="w-full rounded-xl bg-surface border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="Course title"
+            placeholder={t("titlePlaceholder")}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-foreground" htmlFor="description">Description</label>
-          <textarea
-            id="description" name="description" rows={3}
+          <label className="text-sm font-medium text-foreground" htmlFor="description">{t("descriptionLabel")}</label>
+          <textarea id="description" name="description" rows={3}
             className="w-full rounded-xl bg-surface border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-            placeholder="Brief description of the course"
+            placeholder={t("descriptionPlaceholder")}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-foreground" htmlFor="assigned_role">Assigned Role *</label>
-          <select
-            id="assigned_role" name="assigned_role" required
+          <label className="text-sm font-medium text-foreground" htmlFor="assigned_role">{t("assignedRole")}</label>
+          <select id="assigned_role" name="assigned_role" required
             className="w-full rounded-xl bg-surface border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
-            <option value="employee">Employee</option>
-            <option value="manager">Manager</option>
-            <option value="trainer">Trainer</option>
+            <option value="employee">{t("roleEmployee")}</option>
+            <option value="manager">{t("roleManager")}</option>
+            <option value="trainer">{t("roleTrainer")}</option>
           </select>
         </div>
 
         {error && <p className="text-sm text-red-400 bg-red-400/10 rounded-xl px-3 py-2">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={isPending}
+        <button type="submit" disabled={isPending}
           className="w-full bg-primary text-white font-semibold rounded-xl py-2.5 text-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
-          {isPending ? "Creating…" : "Create Course"}
+          {isPending ? t("creating") : t("createCourse")}
         </button>
       </form>
     </div>

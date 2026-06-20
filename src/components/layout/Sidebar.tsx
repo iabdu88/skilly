@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   BookOpen, ShoppingBag, BarChart2, Star, MessageCircle,
   Award, Trophy, Users, Building2, LogOut, Menu, X, UserCircle,
@@ -14,49 +15,49 @@ import type { UserRole } from "@/types/database";
 
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: string;
   icon: React.ElementType;
   roles: UserRole[];
 }
 
 const NAV: NavItem[] = [
-  { href: "/trainer",     label: "Dashboard",    icon: BarChart2,  roles: ["trainer"] },
-  { href: "/manager",     label: "Dashboard",    icon: BarChart2,  roles: ["manager"] },
-  { href: "/employee",    label: "Dashboard",    icon: BarChart2,  roles: ["employee"] },
-  { href: "/super-admin", label: "Dashboard",    icon: Building2,  roles: ["super_admin"] },
+  { href: "/trainer",     labelKey: "dashboard",    icon: BarChart2,  roles: ["trainer"] },
+  { href: "/manager",     labelKey: "dashboard",    icon: BarChart2,  roles: ["manager"] },
+  { href: "/employee",    labelKey: "dashboard",    icon: BarChart2,  roles: ["employee"] },
+  { href: "/super-admin", labelKey: "dashboard",    icon: Building2,  roles: ["super_admin"] },
 
-  { href: "/trainer/courses",   label: "Training Hub", icon: BookOpen, roles: ["trainer"] },
-  { href: "/employee/training", label: "Training Hub", icon: BookOpen, roles: ["employee"] },
+  { href: "/trainer/courses",   labelKey: "training", icon: BookOpen, roles: ["trainer"] },
+  { href: "/employee/training", labelKey: "training", icon: BookOpen, roles: ["employee"] },
 
-  { href: "/trainer/outfit",  label: "Best Outfit", icon: ShoppingBag, roles: ["trainer"] },
-  { href: "/manager/outfit",  label: "Best Outfit", icon: ShoppingBag, roles: ["manager"] },
-  { href: "/employee/outfit", label: "Best Outfit", icon: ShoppingBag, roles: ["employee"] },
+  { href: "/trainer/outfit",  labelKey: "outfit", icon: ShoppingBag, roles: ["trainer"] },
+  { href: "/manager/outfit",  labelKey: "outfit", icon: ShoppingBag, roles: ["manager"] },
+  { href: "/employee/outfit", labelKey: "outfit", icon: ShoppingBag, roles: ["employee"] },
 
-  { href: "/trainer/sales",  label: "Daily Sales", icon: BarChart2, roles: ["trainer"] },
-  { href: "/manager/sales",  label: "Daily Sales", icon: BarChart2, roles: ["manager"] },
-  { href: "/employee/sales", label: "Daily Sales", icon: BarChart2, roles: ["employee"] },
+  { href: "/trainer/sales",  labelKey: "sales", icon: BarChart2, roles: ["trainer"] },
+  { href: "/manager/sales",  labelKey: "sales", icon: BarChart2, roles: ["manager"] },
+  { href: "/employee/sales", labelKey: "sales", icon: BarChart2, roles: ["employee"] },
 
-  { href: "/trainer/stars",  label: "Stars Board", icon: Star, roles: ["trainer"] },
-  { href: "/manager/stars",  label: "Stars Board", icon: Star, roles: ["manager"] },
-  { href: "/employee/stars", label: "Stars Board", icon: Star, roles: ["employee"] },
+  { href: "/trainer/stars",  labelKey: "stars", icon: Star, roles: ["trainer"] },
+  { href: "/manager/stars",  labelKey: "stars", icon: Star, roles: ["manager"] },
+  { href: "/employee/stars", labelKey: "stars", icon: Star, roles: ["employee"] },
 
-  { href: "/trainer/chat",  label: "Chat", icon: MessageCircle, roles: ["trainer"] },
-  { href: "/manager/chat",  label: "Chat", icon: MessageCircle, roles: ["manager"] },
-  { href: "/employee/chat", label: "Chat", icon: MessageCircle, roles: ["employee"] },
+  { href: "/trainer/chat",  labelKey: "chat", icon: MessageCircle, roles: ["trainer"] },
+  { href: "/manager/chat",  labelKey: "chat", icon: MessageCircle, roles: ["manager"] },
+  { href: "/employee/chat", labelKey: "chat", icon: MessageCircle, roles: ["employee"] },
 
-  { href: "/employee/certificates", label: "Certificates", icon: Award,  roles: ["employee"] },
-  { href: "/employee/leaderboard",  label: "Leaderboard",  icon: Trophy, roles: ["employee"] },
-  { href: "/trainer/leaderboard",   label: "Leaderboard",  icon: Trophy, roles: ["trainer"] },
+  { href: "/employee/certificates", labelKey: "certificates", icon: Award,  roles: ["employee"] },
+  { href: "/employee/leaderboard",  labelKey: "leaderboard",  icon: Trophy, roles: ["employee"] },
+  { href: "/trainer/leaderboard",   labelKey: "leaderboard",  icon: Trophy, roles: ["trainer"] },
 
-  { href: "/super-admin/companies", label: "Companies",    icon: Building2, roles: ["super_admin"] },
-  { href: "/super-admin/users",     label: "Users",        icon: Users,     roles: ["super_admin"] },
-  { href: "/super-admin/activity",  label: "Activity Log", icon: Activity,  roles: ["super_admin"] },
-  { href: "/trainer/activity",      label: "Activity Log", icon: Activity,  roles: ["trainer"] },
+  { href: "/super-admin/companies", labelKey: "companies",  icon: Building2, roles: ["super_admin"] },
+  { href: "/super-admin/users",     labelKey: "users",      icon: Users,     roles: ["super_admin"] },
+  { href: "/super-admin/activity",  labelKey: "activity",   icon: Activity,  roles: ["super_admin"] },
+  { href: "/trainer/activity",      labelKey: "activity",   icon: Activity,  roles: ["trainer"] },
 
-  { href: "/employee/profile",    label: "My Profile", icon: UserCircle, roles: ["employee"] },
-  { href: "/trainer/profile",     label: "My Profile", icon: UserCircle, roles: ["trainer"] },
-  { href: "/manager/profile",     label: "My Profile", icon: UserCircle, roles: ["manager"] },
-  { href: "/super-admin/profile", label: "My Profile", icon: UserCircle, roles: ["super_admin"] },
+  { href: "/employee/profile",    labelKey: "profile", icon: UserCircle, roles: ["employee"] },
+  { href: "/trainer/profile",     labelKey: "profile", icon: UserCircle, roles: ["trainer"] },
+  { href: "/manager/profile",     labelKey: "profile", icon: UserCircle, roles: ["manager"] },
+  { href: "/super-admin/profile", labelKey: "profile", icon: UserCircle, roles: ["super_admin"] },
 ];
 
 interface SidebarProps {
@@ -70,6 +71,7 @@ interface SidebarProps {
 export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const t = useTranslations("nav");
   const items = NAV.filter((n) => n.roles.includes(role));
 
   const nav = (
@@ -84,7 +86,9 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
             <span className="text-sm font-bold text-white">S</span>
           </div>
         )}
-        <span className="font-bold text-foreground text-lg truncate">{companyLogo && companyName ? companyName : "Skilly"}</span>
+        <span className="font-bold text-foreground text-lg truncate">
+          {companyLogo && companyName ? companyName : "Skilly"}
+        </span>
       </div>
 
       <ul className="flex-1 overflow-y-auto py-4 space-y-0.5 px-2">
@@ -103,7 +107,7 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
                 )}
               >
                 <item.icon className="w-4 h-4 shrink-0" />
-                {item.label}
+                {t(item.labelKey as Parameters<typeof t>[0])}
               </Link>
             </li>
           );
@@ -125,9 +129,12 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
           </div>
         </div>
         <form action={logoutAction}>
-          <button type="submit" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors w-full">
+          <button
+            type="submit"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors w-full"
+          >
             <LogOut className="w-4 h-4" />
-            Sign out
+            {t("signOut")}
           </button>
         </form>
       </div>
@@ -136,8 +143,9 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
 
   return (
     <>
+      {/* Hamburger — uses logical `start-4` so it flips to the correct side in RTL */}
       <button
-        className="fixed top-4 left-4 z-50 lg:hidden bg-card border border-border rounded-xl p-2"
+        className="fixed top-4 start-4 z-50 lg:hidden bg-card border border-border rounded-xl p-2"
         onClick={() => setOpen(!open)}
       >
         {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -147,14 +155,15 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName }:
         <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setOpen(false)} />
       )}
 
+      {/* Mobile drawer — slides from the inline-start edge (left in LTR, right in RTL) */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border transition-transform duration-200 lg:hidden",
-        open ? "translate-x-0" : "-translate-x-full"
+        "fixed inset-y-0 start-0 z-40 w-64 bg-card border-e border-border transition-transform duration-200 lg:hidden",
+        open ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full"
       )}>
         {nav}
       </aside>
 
-      <aside className="hidden lg:flex w-64 shrink-0 flex-col bg-card border-r border-border min-h-screen">
+      <aside className="hidden lg:flex w-64 shrink-0 flex-col bg-card border-e border-border min-h-screen">
         {nav}
       </aside>
     </>

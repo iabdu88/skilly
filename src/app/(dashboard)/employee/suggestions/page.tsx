@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 import { Lightbulb, Send } from "lucide-react";
 
 export default function SuggestionsPage() {
+  const t = useTranslations("suggestions");
   const [text, setText] = useState("");
   const [sent, setSent] = useState(false);
   const [isPending, start] = useTransition();
@@ -37,16 +39,16 @@ export default function SuggestionsPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <Lightbulb className="w-10 h-10 text-accent mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-foreground">Share a Suggestion</h2>
-          <p className="text-sm text-muted-foreground mt-1">Your feedback helps improve the platform.</p>
+          <h2 className="text-xl font-bold text-foreground">{t("title")}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
 
         {sent ? (
           <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-6 text-center">
-            <p className="text-green-400 font-semibold">Thank you! 🎉</p>
-            <p className="text-sm text-muted-foreground mt-1">Your suggestion was submitted.</p>
+            <p className="text-green-400 font-semibold">{t("thankYou")}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t("submitted")}</p>
             <button onClick={() => setSent(false)} className="mt-4 text-sm text-primary hover:underline">
-              Submit another
+              {t("submitAnother")}
             </button>
           </div>
         ) : (
@@ -55,7 +57,7 @@ export default function SuggestionsPage() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={5}
-              placeholder="Your suggestion…"
+              placeholder={t("placeholder")}
               required
               className="w-full rounded-xl bg-background border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             />
@@ -66,7 +68,7 @@ export default function SuggestionsPage() {
               className="w-full bg-primary text-white font-semibold rounded-xl py-2.5 text-sm hover:bg-primary/90 disabled:opacity-40 flex items-center justify-center gap-2"
             >
               <Send className="w-4 h-4" />
-              {isPending ? "Sending…" : "Submit Suggestion"}
+              {isPending ? t("sending") : t("submit")}
             </button>
           </form>
         )}

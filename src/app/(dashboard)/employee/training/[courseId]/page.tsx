@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle, Circle, Lock } from "lucide-react";
@@ -12,7 +13,7 @@ interface PageProps {
 
 export default async function EmployeeCourseDetailPage({ params }: PageProps) {
   const { courseId } = await params;
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("training")]);
   const supabase = await createClient();
 
   const { data: course } = await supabase
@@ -42,7 +43,7 @@ export default async function EmployeeCourseDetailPage({ params }: PageProps) {
 
   return (
     <>
-      <Header title="Training Hub" userId={user!.id} />
+      <Header title={course.title} userId={user!.id} />
       <main className="p-4 lg:p-6 max-w-2xl space-y-6">
         <div className="flex items-center gap-3">
           <Link href="/employee/training" className="p-2 hover:bg-surface rounded-xl transition-colors">
@@ -78,12 +79,8 @@ export default async function EmployeeCourseDetailPage({ params }: PageProps) {
                       <Circle className="w-4 h-4 text-muted-foreground shrink-0" />
                     )}
                     <span className="flex-1 text-sm font-medium text-foreground">{lesson.title}</span>
-                    {status === "completed" && (
-                      <span className="text-xs text-green-400">Done</span>
-                    )}
-                    {status === "in_progress" && (
-                      <span className="text-xs text-accent">In Progress</span>
-                    )}
+                    {status === "completed" && <span className="text-xs text-green-400">{t("done")}</span>}
+                    {status === "in_progress" && <span className="text-xs text-accent">{t("inProgress")}</span>}
                   </Link>
                 )}
               </div>

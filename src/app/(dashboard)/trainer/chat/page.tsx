@@ -1,11 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { ChatRoom } from "@/components/chat/ChatRoom";
 import type { ChatMessage, User } from "@/types/database";
 
 export default async function TrainerChatPage() {
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("nav")]);
   const supabase = await createClient();
 
   const { data: messages } = await supabase
@@ -17,7 +18,7 @@ export default async function TrainerChatPage() {
 
   return (
     <>
-      <Header title="Chat" userId={user!.id} />
+      <Header title={t("chat")} userId={user!.id} />
       <ChatRoom
         initialMessages={(messages ?? []) as (ChatMessage & { user: User })[]}
         userId={user!.id}

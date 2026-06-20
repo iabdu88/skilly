@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import Link from "next/link";
 import { ArrowLeft, Plus, BookOpen, CheckCircle, Eye } from "lucide-react";
@@ -13,7 +14,7 @@ interface PageProps {
 
 export default async function CourseDetailPage({ params }: PageProps) {
   const { courseId } = await params;
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("training")]);
   const supabase = await createClient();
 
   const { data: course } = await supabase
@@ -31,7 +32,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
     .eq("course_id", courseId)
     .order("order_index");
 
-  // Employee progress per lesson
   const { data: employees } = await supabase
     .from("users")
     .select("id, full_name, avatar_url")
@@ -40,10 +40,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   const lessonIds = lessons?.map((l: Lesson) => l.id) ?? [];
   const { data: progress } = lessonIds.length
-    ? await supabase
-        .from("lesson_progress")
-        .select("*")
-        .in("lesson_id", lessonIds)
+    ? await supabase.from("lesson_progress").select("*").in("lesson_id", lessonIds)
     : { data: [] };
 
   function getStatus(lessonId: string, userId: string) {
@@ -54,7 +51,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   return (
     <>
-      <Header title="Training Hub" userId={user!.id} />
+      <Header title={course.title} userId={user!.id} />
       <main className="p-4 lg:p-6 space-y-6 max-w-4xl">
         <div className="flex items-center gap-3">
           <Link href="/trainer/courses" className="p-2 hover:bg-surface rounded-xl transition-colors">
@@ -67,15 +64,14 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <PublishToggle courseId={course.id} published={course.is_published} />
         </div>
 
-        {/* Lessons */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-foreground">Lessons ({lessons?.length ?? 0})</h3>
+            <h3 className="font-semibold text-foreground">{t("lessons", { n: lessons?.length ?? 0 })}</h3>
             <Link
               href={`/trainer/courses/${courseId}/lessons/new`}
               className="flex items-center gap-1.5 text-sm text-primary hover:underline"
             >
-              <Plus className="w-3.5 h-3.5" /> Add Lesson
+              <Plus className="w-3.5 h-3.5" /> {t("addLesson")}
             </Link>
           </div>
 
@@ -94,20 +90,19 @@ export default async function CourseDetailPage({ params }: PageProps) {
               </Link>
             ))}
             {!lessons?.length && (
-              <p className="text-sm text-muted-foreground text-center py-8">No lessons yet.</p>
+              <p className="text-sm text-muted-foreground text-center py-8">{t("noLessons")}</p>
             )}
           </div>
         </div>
 
-        {/* Progress table */}
         {employees && employees.length > 0 && lessons && lessons.length > 0 && (
           <div>
-            <h3 className="font-semibold text-foreground mb-3">Employee Progress</h3>
+            <h3 className="font-semibold text-foreground mb-3">{t("employeeProgress")}</h3>
             <div className="bg-surface rounded-2xl border border-border overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left px-4 py-3 text-muted-foreground font-medium">Employee</th>
+                    <th className="text-start px-4 py-3 text-muted-foreground font-medium">{t("employeeProgress")}</th>
                     {lessons.map((l: Lesson) => (
                       <th key={l.id} className="px-3 py-3 text-center text-muted-foreground font-medium text-xs truncate max-w-24">
                         {l.title}

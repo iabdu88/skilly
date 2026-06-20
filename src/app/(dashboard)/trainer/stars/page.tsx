@@ -1,12 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { StarCard } from "@/components/stars/StarCard";
 import { StarPickerForm } from "@/components/stars/StarPickerForm";
 import type { Star, User } from "@/types/database";
 
+function getWeek(date: Date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+}
+
 export default async function TrainerStarsPage() {
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("stars")]);
   const supabase = await createClient();
 
   const now = new Date();
@@ -35,9 +43,9 @@ export default async function TrainerStarsPage() {
 
   return (
     <>
-      <Header title="Stars Board" userId={user!.id} />
+      <Header title={t("title")} userId={user!.id} />
       <main className="p-4 lg:p-6 space-y-6 max-w-3xl">
-        <h2 className="text-xl font-bold text-foreground">Stars Board</h2>
+        <h2 className="text-xl font-bold text-foreground">{t("title")}</h2>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <StarCard type="week" user={weekStar?.user ?? null} period={weekPeriod} />
@@ -65,15 +73,14 @@ export default async function TrainerStarsPage() {
           )}
         </div>
 
-        {/* History */}
         {stars && stars.length > 0 && (
           <div>
-            <h3 className="font-semibold text-foreground mb-3">History</h3>
+            <h3 className="font-semibold text-foreground mb-3">{t("history")}</h3>
             <div className="space-y-2">
               {(stars as (Star & { user: User })[]).map((s) => (
                 <div key={s.id} className="flex items-center gap-3 bg-surface border border-border rounded-xl px-4 py-3">
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${s.type === "week" ? "bg-yellow-400/10 text-yellow-400" : "bg-accent/10 text-accent"}`}>
-                    {s.type === "week" ? "Week" : "Month"}
+                    {s.type === "week" ? t("typeWeek") : t("typeMonth")}
                   </span>
                   <span className="flex-1 text-sm font-medium text-foreground">{s.user?.full_name}</span>
                   <span className="text-xs text-muted-foreground">{s.period}</span>
@@ -85,11 +92,4 @@ export default async function TrainerStarsPage() {
       </main>
     </>
   );
-}
-
-function getWeek(date: Date) {
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
 }

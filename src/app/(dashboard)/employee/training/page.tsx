@@ -1,12 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import Link from "next/link";
 import { BookOpen, CheckCircle, Clock } from "lucide-react";
 import type { Course, LessonProgress } from "@/types/database";
 
 export default async function EmployeeTrainingPage() {
-  const user = await getUser();
+  const [user, t] = await Promise.all([getUser(), getTranslations("training")]);
   const supabase = await createClient();
 
   const { data: courses } = await supabase
@@ -18,10 +19,7 @@ export default async function EmployeeTrainingPage() {
 
   const courseIds = courses?.map((c: Course) => c.id) ?? [];
   const { data: progress } = courseIds.length
-    ? await supabase
-        .from("lesson_progress")
-        .select("*")
-        .eq("user_id", user!.id)
+    ? await supabase.from("lesson_progress").select("*").eq("user_id", user!.id)
     : { data: [] };
 
   function courseProgress(lessons: { id: string }[]) {
@@ -35,11 +33,11 @@ export default async function EmployeeTrainingPage() {
 
   return (
     <>
-      <Header title="Training Hub" userId={user!.id} />
+      <Header title={t("myCourses")} userId={user!.id} />
       <main className="p-4 lg:p-6 space-y-6">
         <div>
-          <h2 className="text-xl font-bold text-foreground">My Courses</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">{courses?.length ?? 0} courses available</p>
+          <h2 className="text-xl font-bold text-foreground">{t("myCourses")}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("coursesAvailable", { n: courses?.length ?? 0 })}</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -65,17 +63,14 @@ export default async function EmployeeTrainingPage() {
                 )}
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
-                    <span>{done}/{total} lessons</span>
+                    <span>{t("lessonsCount", { done, total })}</span>
                     <span className="flex items-center gap-1">
                       {completed ? <CheckCircle className="w-3 h-3 text-green-400" /> : <Clock className="w-3 h-3" />}
                       {pct}%
                     </span>
                   </div>
                   <div className="h-1.5 bg-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${pct}%` }}
-                    />
+                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               </Link>
@@ -85,7 +80,7 @@ export default async function EmployeeTrainingPage() {
           {!courses?.length && (
             <div className="col-span-full text-center py-16 text-muted-foreground">
               <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="font-medium">No courses available yet</p>
+              <p className="font-medium">{t("noCoursesYet")}</p>
             </div>
           )}
         </div>

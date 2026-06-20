@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 import { Trophy, TrendingUp, TrendingDown } from "lucide-react";
 import { getLevelInfo } from "@/lib/gamification";
 
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function LeaderboardRealtime({ initialUsers, currentUserId, companyId }: Props) {
+  const t = useTranslations("leaderboard");
   const [users, setUsers] = useState<LeaderUser[]>(initialUsers);
   const [toast, setToast] = useState<{ text: string; up: boolean } | null>(null);
   const prevRankRef = useRef<number>(-1);
@@ -45,13 +47,15 @@ export function LeaderboardRealtime({ initialUsers, currentUserId, companyId }: 
     return () => { supabase.removeChannel(channel); };
   }, [companyId]);
 
-  // Show toast on rank change (skip initial render)
   useEffect(() => {
     const myRank = users.findIndex((u) => u.id === currentUserId) + 1;
     if (myRank === 0) return;
     if (prevRankRef.current > 0 && myRank !== prevRankRef.current) {
       const up = myRank < prevRankRef.current;
-      setToast({ text: up ? `You moved up to #${myRank}! 🎉` : `You dropped to #${myRank}`, up });
+      setToast({
+        text: up ? t("movedUp", { rank: myRank }) : t("droppedTo", { rank: myRank }),
+        up,
+      });
       setTimeout(() => setToast(null), 3500);
     }
     prevRankRef.current = myRank;
@@ -62,18 +66,16 @@ export function LeaderboardRealtime({ initialUsers, currentUserId, companyId }: 
 
   return (
     <div className="space-y-6">
-      {/* Rank banner */}
       {myRank > 0 && (
         <div className="bg-primary/10 border border-primary/30 rounded-2xl px-4 py-3 flex items-center gap-3">
           <Trophy className="w-5 h-5 text-accent shrink-0" />
           <p className="text-sm text-foreground">
-            Your rank: <span className="font-bold text-accent">#{myRank}</span>
-            {myRank === 1 && " 🏆 You're #1!"}
+            {t("yourRank")} <span className="font-bold text-accent">#{myRank}</span>
+            {myRank === 1 && ` ${t("youAreFirst")}`}
           </p>
         </div>
       )}
 
-      {/* Rank-change toast */}
       {toast && (
         <div
           className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium border ${
@@ -87,7 +89,6 @@ export function LeaderboardRealtime({ initialUsers, currentUserId, companyId }: 
         </div>
       )}
 
-      {/* List */}
       <div className="space-y-2">
         {users.map((u, idx) => {
           const isMe = u.id === currentUserId;
@@ -111,7 +112,7 @@ export function LeaderboardRealtime({ initialUsers, currentUserId, companyId }: 
               )}
               <div className="flex-1 min-w-0">
                 <p className={`text-sm font-medium truncate ${isMe ? "text-primary" : "text-foreground"}`}>
-                  {u.full_name} {isMe && "(You)"}
+                  {u.full_name} {isMe && `(${t("you")})`}
                 </p>
                 <p className="text-[10px] text-muted-foreground" style={{ color: lvl.color }}>
                   {lvl.emoji} Lv.{lvl.level} {lvl.name}
