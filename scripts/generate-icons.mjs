@@ -1,14 +1,12 @@
 // Generates PWA icon PNGs from the Skilly bracket wordmark design using Playwright.
 // Run: node scripts/generate-icons.mjs
-// Run: node scripts/generate-icons.mjs --preview   (renders 256px preview for inspection)
+// Run: node scripts/generate-icons.mjs --preview   (256px preview for visual check)
 //
-// Design rationale:
-//   SkillySvgLogo.tsx uses viewBox="0 0 160 40" with bracket arms at x=6/154 (outer)
-//   and x=18/142 (arm tips), text at font-size=26, stroke-width=2.5.
-//   We scale that 160×40 logo at ×3 (= 480×120px, centred in 512×512) so the
-//   bracket-to-text ratio is pixel-identical to the sidebar logo.
-//   x-offset = (512-480)/2 = 16,  y-offset = (512-120)/2 = 196
-//   stroke-width is increased from 7.5 (proportional) to 12 for icon visibility.
+// Layout in 512×512 viewBox:
+//   - brackets span x=16..496 (97% width), y=163..349 (36% height)
+//   - arm depth = 45px  →  inner tips at x=61 / x=451  →  inner width = 390px
+//   - "skilly" at font-size 140 ≈ 364px wide  →  fills 93% of inner space
+//   - text height / bracket height  =  140 / 186  =  75%  ✓
 import { chromium } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,22 +15,20 @@ import fs from 'fs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const iconsDir = path.join(__dirname, '../public/icons');
 
-// SVG body — no background rect; the HTML page supplies the dark fill for PNGs.
-// Coordinates are in the 512×512 viewBox; the SVG width/height attrs do the scaling.
 function svgBody(size) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Left bracket [  (SkillySvgLogo ×3, x+16, y+196) -->
-    <path d="M70 214 L34 214 L34 298 L70 298"
-      stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Left bracket [ -->
+    <path d="M61 163 L16 163 L16 349 L61 349"
+      stroke="#F59E0B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
     <!-- Right bracket ] -->
-    <path d="M442 214 L478 214 L478 298 L442 298"
-      stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- "skilly" wordmark: font-size=26×3=78, centred at (256,256) -->
+    <path d="M451 163 L496 163 L496 349 L451 349"
+      stroke="#F59E0B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- "skilly" at font-size 140 — fills ~75% of the 186px bracket height -->
     <text
-      x="256" y="256"
+      x="256" y="252"
       font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
       font-weight="700"
-      font-size="78"
+      font-size="140"
       fill="#F8F7FF"
       text-anchor="middle"
       dominant-baseline="central"
@@ -67,9 +63,8 @@ for (const size of sizes) {
   await page.setContent(makeHtml(size));
   try {
     await page.waitForLoadState('networkidle', { timeout: 5000 });
-  } catch {
-    // Font CDN timeout — system fallback will be used
-  }
+  } catch { /* font CDN timeout — system fallback used */ }
+
   const filename = PREVIEW ? `icon-preview-${size}x${size}.png` : `icon-${size}x${size}.png`;
   const outputPath = path.join(iconsDir, filename);
   fs.writeFileSync(outputPath, await page.screenshot({ type: 'png' }));
@@ -78,4 +73,3 @@ for (const size of sizes) {
 }
 
 await browser.close();
-console.log('Done.');

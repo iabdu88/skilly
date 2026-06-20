@@ -1,25 +1,21 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skilly">
   <!-- Dark background with rounded corners for SVG icon rendering -->
   <rect width="512" height="512" rx="96" fill="#0F0A1E"/>
-  <!--
-    SkillySvgLogo.tsx (viewBox 160×40) scaled ×3 and centred in 512×512:
-      x-offset = (512 - 480) / 2 = 16
-      y-offset = (512 - 120) / 2 = 196
-    stroke-width raised from proportional 7.5 to 12 for icon legibility.
-  -->
-  <!-- Left bracket [ -->
-  <path d="M70 214 L34 214 L34 298 L70 298"
-    stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Left bracket [
+       Outer x=16, arm tip x=61, vertical y=163..349 (bracket height 186px)
+       stroke-width=16 → visible at 192px display -->
+  <path d="M61 163 L16 163 L16 349 L61 349"
+    stroke="#F59E0B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Right bracket ] -->
-  <path d="M442 214 L478 214 L478 298 L442 298"
-    stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- "skilly" wordmark: font-size 26×3 = 78, centred at (256, 256) -->
+  <path d="M451 163 L496 163 L496 349 L451 349"
+    stroke="#F59E0B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- "skilly" wordmark — font-size 140 fills ~75% of the 186px bracket height -->
   <text
     x="256"
-    y="256"
+    y="252"
     font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
     font-weight="700"
-    font-size="78"
+    font-size="140"
     fill="#F8F7FF"
     text-anchor="middle"
     dominant-baseline="central"
