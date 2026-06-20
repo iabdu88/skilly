@@ -1,23 +1,17 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skilly">
-  <!-- Dark background with rounded corners for app icon use -->
+  <!-- Dark background with rounded corners for SVG icon use -->
   <rect width="512" height="512" rx="96" fill="#0F0A1E"/>
-
-  <!-- Amber corner bracket accents — top-left -->
-  <path d="M68 188L68 68L188 68" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- top-right -->
-  <path d="M444 188L444 68L324 68" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- bottom-left -->
-  <path d="M68 324L68 444L188 444" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- bottom-right -->
-  <path d="M444 324L444 444L324 444" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- "S" lettermark centered in the bracket frame -->
+  <!-- Left bracket [ matching SkillySvgLogo.tsx style -->
+  <path d="M150 60 L60 60 L60 452 L150 452" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Right bracket ] -->
+  <path d="M362 60 L452 60 L452 452 L362 452" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- "S" lettermark centered between brackets -->
   <text
     x="256"
     y="256"
     font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
     font-weight="800"
-    font-size="240"
+    font-size="220"
     fill="#F8F7FF"
     text-anchor="middle"
     dominant-baseline="central"
