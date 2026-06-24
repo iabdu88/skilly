@@ -18,8 +18,10 @@
   <circle cx="200" cy="165" r="38" fill="#0A1628"/>
   <!-- Shoulders / suit body -->
   <path d="M130 230 C130 215 158 205 200 205 C242 205 270 215 270 230 L285 335 L115 335 Z" fill="#0A1628"/>
-  <!-- Tie -->
-  <path d="M187 205 L213 205 L209 285 L200 298 L191 285 Z" fill="#0A1628" opacity="0.7"/>
-  <!-- Collar V -->
-  <path d="M172 212 L200 240 L228 212" fill="none" stroke="#0F0A1E" stroke-width="8" stroke-linejoin="round"/>
+  <!-- Collar V — rendered first so the tie knot sits on top -->
+  <path d="M168 212 L200 248 L232 212" fill="none" stroke="#0F0A1E" stroke-width="14" stroke-linejoin="round"/>
+  <!-- Necktie — 48px knot, 32px blade, gradient fill for high contrast at 192×192
+       At 192×192 this renders ≈18px wide (knot) / ≈12px (blade): clearly visible -->
+  <path d="M176 248 L224 248 L216 284 L216 330 L200 348 L184 330 L184 284 Z"
+    fill="url(#sg-icon)"/>
 </svg>
