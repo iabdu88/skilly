@@ -1,17 +1,31 @@
-<svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Skilly">
-  <!-- Left bracket accent -->
-  <path d="M18 6L6 6L6 34L18 34" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Wordmark -->
-  <text
-    x="80"
-    y="20"
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="167" viewBox="0 0 180 125" role="img" aria-label="Skilly">
+  <defs>
+    <linearGradient id="sg-a" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#0066FF"/>
+      <stop offset="100%" stop-color="#00E5CC"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Play-button triangle, rounded corners -->
+  <path d="M20 13 L20 66 Q20 76 31 76 L152 46 Q164 39 152 32 L31 2 Q20 2 20 13 Z"
+    fill="url(#sg-a)"/>
+
+  <!-- Person silhouette: head + body/suit in dark navy -->
+  <!-- Head -->
+  <circle cx="60" cy="22" r="7" fill="#0A1628"/>
+  <!-- Shoulders / suit body -->
+  <path d="M46 33 C46 29 52 28 60 28 C68 28 74 29 74 33 L76 58 L44 58 Z" fill="#0A1628"/>
+  <!-- Tie in gradient so it reads against the dark suit -->
+  <path d="M57 28 L63 28 L62 48 L60 51 L58 48 Z" fill="url(#sg-a)"/>
+  <!-- Collar V cutout -->
+  <path d="M54 30 L60 38 L66 30" fill="none" stroke="#0A1628" stroke-width="2" stroke-linejoin="round"/>
+
+  <!-- "skilly" wordmark -->
+  <text x="90" y="116"
     font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
     font-weight="700"
-    font-size="18"
-    fill="#F8F7FF"
+    font-size="36"
+    fill="#0A1628"
     text-anchor="middle"
-    dominant-baseline="central"
-  >skilly</text>
-  <!-- Right bracket accent -->
-  <path d="M142 6L154 6L154 34L142 34" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    dominant-baseline="auto">skilly</text>
 </svg>
