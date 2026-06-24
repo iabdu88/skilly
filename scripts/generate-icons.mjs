@@ -18,7 +18,7 @@ function makeHtml(svgContent, size) {
 <html>
 <head>
   <meta charset="utf-8">
-  <style>* { margin:0; padding:0; } html,body { width:${size}px; height:${size}px; overflow:hidden; background:#0F0A1E; }</style>
+  <style>* { margin:0; padding:0; } html,body { width:${size}px; height:${size}px; overflow:hidden; background:#FFFFFF; }</style>
 </head>
 <body>${scaled}</body>
 </html>`;

@@ -1,31 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="240" height="167" viewBox="0 0 180 125" role="img" aria-label="Skilly">
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="167" viewBox="0 0 180 125"
+  role="img" aria-label="Skilly" fill="none">
   <defs>
-    <linearGradient id="sg-a" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+    <linearGradient id="sg-logo" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
       <stop offset="0%" stop-color="#0066FF"/>
       <stop offset="100%" stop-color="#00E5CC"/>
     </linearGradient>
   </defs>
 
-  <!-- Play-button triangle, rounded corners -->
+  <!-- Play-button triangle -->
   <path d="M20 13 L20 66 Q20 76 31 76 L152 46 Q164 39 152 32 L31 2 Q20 2 20 13 Z"
-    fill="url(#sg-a)"/>
+    fill="url(#sg-logo)"/>
 
-  <!-- Person silhouette: head + body/suit in dark navy -->
+  <!-- Female figure (behind male) -->
+  <!-- Head + shoulder-length hair -->
+  <path d="M61 26 C61 18 74 18 74 26 C79 31 80 40 77 48 C74 53 71 55 68 55
+           C65 55 62 53 59 48 C56 40 58 31 61 26 Z" fill="#0A1628"/>
+  <!-- Body -->
+  <path d="M58 40 C58 37 62 35 68 35 C74 35 78 37 78 40 L80 65 L56 65 Z"
+    fill="#0A1628"/>
+
+  <!-- Male figure (in front) -->
   <!-- Head -->
-  <circle cx="60" cy="22" r="7" fill="#0A1628"/>
-  <!-- Shoulders / suit body -->
-  <path d="M46 33 C46 29 52 28 60 28 C68 28 74 29 74 33 L76 58 L44 58 Z" fill="#0A1628"/>
-  <!-- Tie in gradient so it reads against the dark suit -->
-  <path d="M57 28 L63 28 L62 48 L60 51 L58 48 Z" fill="url(#sg-a)"/>
-  <!-- Collar V cutout -->
-  <path d="M54 30 L60 38 L66 30" fill="none" stroke="#0A1628" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="53" cy="21" r="8" fill="#0A1628"/>
+  <!-- Suit body -->
+  <path d="M37 30 C37 27 44 25 53 25 C62 25 69 27 69 30 L71 65 L35 65 Z"
+    fill="#0A1628"/>
+  <!-- Collar V -->
+  <path d="M47 27 L53 35 L59 27" fill="none" stroke="url(#sg-logo)"
+    stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Necktie -->
+  <path d="M46 35 L60 35 L58 54 L53 58 L48 54 Z" fill="url(#sg-logo)"/>
 
-  <!-- "skilly" wordmark -->
+  <!-- "skilly" wordmark in dark navy -->
   <text x="90" y="116"
     font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"
-    font-weight="700"
-    font-size="36"
-    fill="#0A1628"
-    text-anchor="middle"
-    dominant-baseline="auto">skilly</text>
+    font-weight="700" font-size="36" fill="#0A1628"
+    text-anchor="middle" dominant-baseline="auto">skilly</text>
 </svg>

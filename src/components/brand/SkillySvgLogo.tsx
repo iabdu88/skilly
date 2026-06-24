@@ -4,6 +4,8 @@ interface Props {
 }
 
 // viewBox 180×125: play-button icon (0–76 y) + "skilly" wordmark (76–125 y)
+// Two silhouettes: male with necktie (left, larger, drawn on top) + female with
+// shoulder-length hair (right, slightly smaller, drawn behind).
 export function SkillySvgLogo({ width = 130, className }: Props) {
   const height = Math.round(width * (125 / 180));
   return (
@@ -30,26 +32,42 @@ export function SkillySvgLogo({ width = 130, className }: Props) {
         fill="url(#sg-a)"
       />
 
-      {/* Person silhouette — currentColor adapts to light/dark mode */}
-      {/* Head */}
-      <circle cx="60" cy="22" r="7" fill="currentColor" />
-      {/* Shoulders / suit body */}
+      {/* ── Female figure (behind male) ── */}
+      {/* Head + shoulder-length hair as one silhouette path */}
       <path
-        d="M46 33 C46 29 52 28 60 28 C68 28 74 29 74 33 L76 58 L44 58 Z"
+        d="M61 26 C61 18 74 18 74 26 C79 31 80 40 77 48 C74 53 71 55 68 55
+           C65 55 62 53 59 48 C56 40 58 31 61 26 Z"
         fill="currentColor"
       />
-      {/* Tie in gradient so it's visible against currentColor body */}
-      <path d="M57 28 L63 28 L62 48 L60 51 L58 48 Z" fill="url(#sg-a)" />
-      {/* Collar V */}
+      {/* Body */}
       <path
-        d="M54 30 L60 38 L66 30"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
+        d="M58 40 C58 37 62 35 68 35 C74 35 78 37 78 40 L80 65 L56 65 Z"
+        fill="currentColor"
       />
 
-      {/* "skilly" wordmark — currentColor: dark in light mode, near-white in dark mode */}
+      {/* ── Male figure (in front) ── */}
+      {/* Head */}
+      <circle cx="53" cy="21" r="8" fill="currentColor" />
+      {/* Suit body */}
+      <path
+        d="M37 30 C37 27 44 25 53 25 C62 25 69 27 69 30 L71 65 L35 65 Z"
+        fill="currentColor"
+      />
+      {/* Collar V — shows gradient shirt under suit */}
+      <path
+        d="M47 27 L53 35 L59 27"
+        fill="none"
+        stroke="url(#sg-a)"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* Necktie — gradient fill, wide enough to read at sidebar width */}
+      <path
+        d="M46 35 L60 35 L58 54 L53 58 L48 54 Z"
+        fill="url(#sg-a)"
+      />
+
+      {/* "skilly" wordmark — currentColor: dark navy in light mode, near-white in dark mode */}
       <text
         x="90"
         y="116"
