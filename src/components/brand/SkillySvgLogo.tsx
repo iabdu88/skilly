@@ -5,14 +5,13 @@ interface Props {
   className?: string;
 }
 
-export function SkillySvgLogo({ width = 150, className }: Props) {
-  const height = Math.round(width * (60 / 150));
+export function SkillySvgLogo({ width = 60, className }: Props) {
   return (
     <Image
       src="/logo.png"
       alt="Skilly"
       width={width}
-      height={height}
+      height={width}  // logo.png is square (68×68)
       className={className}
       priority
     />

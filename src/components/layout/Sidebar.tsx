@@ -92,7 +92,7 @@ export function Sidebar({ role, userName, avatarUrl, companyLogo, companyName, c
             <span className="font-bold text-foreground text-lg truncate">{displayName}</span>
           </>
         ) : (
-          <SkillySvgLogo width={130} />
+          <SkillySvgLogo width={48} />
         )}
       </div>
 
